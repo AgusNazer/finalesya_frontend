@@ -1,18 +1,100 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+// Configuración de la API
+const API_BASE_URL = 'http://localhost:10000/api';
 
 function UserPanel() {
-  const [subject, setSubject] = useState('');
+  const [type, setType] = useState('');
   const [date, setDate] = useState('');
+  const [location, setLocation] = useState('');
+  const [subjectId, setSubjectId] = useState('');
+  const [subjects, setSubjects] = useState([]);
   const [exams, setExams] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleAddExam = () => {
-    if (!subject || !date) return alert("Completa todos los campos");
+  // Cargar materias al montar el componente
+  useEffect(() => {
+    fetchSubjects();
+    fetchExams();
+  }, []);
 
-    const newExam = { subject, date };
-    setExams([...exams, newExam]);
+  // Obtener materias desde la API
+  const fetchSubjects = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/subject`);
+      if (response.ok) {
+        const data = await response.json();
+        setSubjects(data);
+      }
+    } catch (error) {
+      console.error('Error al cargar materias:', error);
+    }
+  };
 
-    setSubject('');
-    setDate('');
+  // Obtener exámenes desde la API
+  const fetchExams = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/exams`);
+      if (response.ok) {
+        const data = await response.json();
+        setExams(data);
+      }
+    } catch (error) {
+      console.error('Error al cargar exámenes:', error);
+    }
+  };
+
+  // Crear examen en la API
+  const handleAddExam = async () => {
+    if (!type || !date || !subjectId) {
+      setError("Completa tipo, fecha y materia");
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const examData = {
+        type: type,
+        date: new Date(date).toISOString(),
+        location: location || null,
+        passed: null, // Se puede marcar después
+        subjectId: parseInt(subjectId)
+      };
+
+      const response = await fetch(`${API_BASE_URL}/exams`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(examData)
+      });
+
+      if (response.ok) {
+        const createdExam = await response.json();
+        
+        // Actualizar la lista local
+        setExams([...exams, createdExam]);
+        
+        // Limpiar formulario
+        setType('');
+        setDate('');
+        setLocation('');
+        setSubjectId('');
+        
+        setError('');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || 'Error al crear el examen');
+      }
+    } catch (error) {
+      setError('Error de conexión con el servidor');
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -21,33 +103,86 @@ function UserPanel() {
         📚 Panel del Usuario
       </h2>
 
+      {/* Mensaje de error */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded-lg">
+          {error}
+        </div>
+      )}
+
       {/* Formulario */}
-      <div className="mb-8 space-y-4 md:space-y-0 md:flex md:flex-wrap md:gap-4">
-        <input
-          type="text"
-          placeholder="Materia"
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-          className="w-full md:flex-1 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300"
-        />
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          className="w-full md:w-auto bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300"
-        />
+      <div className="mb-8 space-y-4">
+        {/* Tipo de examen */}
+        <div>
+          <label className="block text-sm font-medium mb-2">Tipo de examen</label>
+          <select
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300"
+          >
+            <option value="">Seleccionar tipo</option>
+            <option value="Parcial">Parcial</option>
+            <option value="Final">Final</option>
+            <option value="Recuperatorio">Recuperatorio</option>
+            <option value="Oral">Oral</option>
+          </select>
+        </div>
+
+        {/* Materia */}
+        <div>
+          <label className="block text-sm font-medium mb-2">Materia</label>
+          <select
+            value={subjectId}
+            onChange={(e) => setSubjectId(e.target.value)}
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300"
+          >
+            <option value="">Seleccionar materia</option>
+            {subjects.map((subject) => (
+              <option key={subject.id} value={subject.id}>
+                {subject.name} - {subject.major}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Fecha y ubicación */}
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">Fecha del examen</label>
+            <input
+              type="datetime-local"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium mb-2">Ubicación (opcional)</label>
+            <input
+              type="text"
+              placeholder="Ej: Aula 205, Laboratorio A"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300"
+            />
+          </div>
+        </div>
+
+        {/* Botón */}
         <button
           onClick={handleAddExam}
-          className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800"
+          disabled={loading}
+          className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          ➕ Agregar Examen
+          {loading ? '⏳ Creando...' : '➕ Agregar Examen'}
         </button>
       </div>
 
       {/* Lista de exámenes */}
       <div>
         <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200 flex items-center gap-2">
-          📝 Exámenes Agregados
+          📝 Exámenes Programados
           <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm font-medium px-2 py-1 rounded-full">
             {exams.length}
           </span>
@@ -57,33 +192,48 @@ function UserPanel() {
           <div className="text-center py-8">
             <div className="text-gray-400 dark:text-gray-500 text-lg mb-2">📭</div>
             <p className="text-gray-500 dark:text-gray-400">
-              No hay exámenes agregados todavía
+              No hay exámenes programados todavía
             </p>
             <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
-              Agrega tu primera materia y fecha para comenzar
+              Agrega tu primer examen para comenzar
             </p>
           </div>
         ) : (
           <ul className="space-y-3">
-            {exams.map((exam, index) => (
+            {exams.map((exam) => (
               <li
-                key={index}
-                className="bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 px-5 py-4 rounded-lg border border-gray-200 dark:border-gray-600 transition-colors duration-300 transform hover:scale-[1.02]"
+                key={exam.id}
+                className="bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 px-5 py-4 rounded-lg border border-gray-200 dark:border-gray-600 transition-colors duration-300"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                  <span className="font-semibold text-gray-800 dark:text-gray-200 text-lg">
-                    📖 {exam.subject}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">📅</span>
-                    <span className="text-gray-700 dark:text-gray-300 font-medium">
-                      {new Date(exam.date).toLocaleDateString('es-ES', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
+                  <div>
+                    <span className="font-semibold text-gray-800 dark:text-gray-200 text-lg">
+                      📖 {exam.subjectName}
                     </span>
+                    <span className="ml-2 text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
+                      {exam.type}
+                    </span>
+                  </div>
+                  
+                  <div className="text-right">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-500 dark:text-gray-400">📅</span>
+                      <span className="text-gray-700 dark:text-gray-300 font-medium">
+                        {new Date(exam.date).toLocaleDateString('es-ES', {
+                          weekday: 'short',
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </span>
+                    </div>
+                    {exam.location && (
+                      <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        📍 {exam.location}
+                      </div>
+                    )}
                   </div>
                 </div>
                 

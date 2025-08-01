@@ -1,3 +1,4 @@
+import SubjectForm from '../components/SubjectForm'
 import UserPanel from '../components/UserPanel'
 
 function MyPanelPage() {
@@ -19,6 +20,7 @@ function MyPanelPage() {
       </div>
 
       {/* User Panel Component */}
+      <SubjectForm/>
       <UserPanel />
 
       {/* Quick Actions */}

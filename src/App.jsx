@@ -101,7 +101,7 @@ function App() {
         {/* Tu footer existente */}
         <footer className="mt-12 text-center text-gray-500 dark:text-gray-400">
           <p className="text-sm">
-            Desarrollado con ❤️ usando React y .NET
+            Desarrollado con por AGUS NAZER, usando React y .NET
           </p>
         </footer>
       </div>
