@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Configuración base para dark mode */
+@layer base {
+  html {
+    @apply transition-colors duration-300;
+  }
+  
+  body {
+    @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300;
+  }
+}
+
+/* Estilos personalizados */
+a {
+  @apply font-medium text-blue-600 dark:text-blue-400 no-underline hover:text-blue-800 dark:hover:text-blue-300 transition-colors;
+}
+
+/* Eliminar estilos conflictivos del CSS base de Vite */
+button {
+  @apply rounded-lg border border-transparent px-4 py-2 text-sm font-medium transition-colors;
+}
+
+/* Resetear algunos estilos de Vite que interfieren */
+#root {
+  @apply w-full min-h-screen;
+}
