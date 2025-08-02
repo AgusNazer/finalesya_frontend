@@ -96,6 +96,50 @@ function UserPanel() {
       setLoading(false);
     }
   };
+  // Eliminar examen
+const handleDeleteExam = async (examId) => {
+  if (!window.confirm('¿Estás seguro de que quieres eliminar este examen?')) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/exams/${examId}`, {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      fetchExams(); // Recargar lista
+      setError('');
+    } else {
+      setError('Error al eliminar el examen');
+    }
+  } catch (error) {
+    setError('Error de conexión');
+  }
+};
+//eliminar materias
+const handleDeleteSubject = async (subjectId) => {
+  if (!window.confirm('¿Estás seguro de que quieres eliminar esta materia?')) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/subject/${subjectId}`, {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      fetchSubjects(); // Refrescar lista de materias
+      setError('');
+    } else {
+      setError('Error al eliminar la materia');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    setError('Error de conexión al eliminar la materia');
+  }
+};
+
 
   return (
     <div className="p-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-300">
@@ -178,6 +222,45 @@ function UserPanel() {
           {loading ? '⏳ Creando...' : '➕ Agregar Examen'}
         </button>
       </div>
+
+      {/* lista de materias para eliminar */}
+       {/* Lista de materias */}
+<div className="mt-10">
+  <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200 flex items-center gap-2">
+    📘 Materias Registradas
+    <span className="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm font-medium px-2 py-1 rounded-full">
+      {subjects.length}
+    </span>
+  </h3>
+
+  {subjects.length === 0 ? (
+    <p className="text-gray-500 dark:text-gray-400">No hay materias registradas aún.</p>
+  ) : (
+    <ul className="space-y-2">
+      {subjects.map((subject) => (
+        <li
+          key={subject.id}
+          className="flex items-center justify-between bg-gray-50 dark:bg-gray-700 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-600 transition-colors"
+        >
+          <div>
+            <span className="font-medium text-gray-900 dark:text-gray-100">{subject.name}</span>
+            <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">({subject.major})</span>
+            <span className="ml-2 text-sm text-gray-400">📅 {subject.yearTaken}</span>
+          </div>
+          <button
+            onClick={() => handleDeleteSubject(subject.id)}
+            className="p-2 text-red-600 hover:bg-red-100 dark:hover:bg-red-800 rounded-lg"
+            title="Eliminar materia"
+          >
+            🗑️
+          </button>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
+
 
       {/* Lista de exámenes */}
       <div>
@@ -272,6 +355,14 @@ function UserPanel() {
                     }
                   })()}
                 </div>
+
+<button
+  onClick={() => handleDeleteExam(exam.id)}
+  className="p-2 text-red-600 hover:bg-red-100 rounded-lg"
+  title="Eliminar examen"
+>
+  🗑️
+</button>
               </li>
             ))}
           </ul>

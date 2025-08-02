@@ -37,7 +37,7 @@ function SubjectForm() {
       });
 
       if (response.ok) {
-        setSuccess('Materia agregada correctamente');
+        setSuccess('Materia agregada correctamente(refrescar pagina para verla)');
         setName('');
         setMajor('');
         setYearTaken('');
@@ -54,6 +54,17 @@ function SubjectForm() {
   return (
     <div className="p-6 mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 space-y-4">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">➕ Agregar Materia</h3>
+{success && (
+  <div className="mt-4 p-4 bg-green-100 border border-green-400 text-green-800 rounded-lg">
+    <p>{success}</p>
+    <button
+      onClick={() => window.location.reload()}
+      className="mt-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition"
+    >
+      🔄 Refrescar página
+    </button>
+  </div>
+)}
 
       {error && <div className="text-red-600 dark:text-red-400">{error}</div>}
       {success && <div className="text-green-600 dark:text-green-400">{success}</div>}
