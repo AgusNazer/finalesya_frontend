@@ -114,7 +114,7 @@ const handleDeleteExam = async (examId) => {
       setError('Error al eliminar el examen');
     }
   } catch (error) {
-    setError('Error de conexión');
+    setError('Error de conexión', error);
   }
 };
 //eliminar materias
