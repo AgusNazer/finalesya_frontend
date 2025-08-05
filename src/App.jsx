@@ -1,13 +1,13 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom'
-import { AuthProvider, useAuth } from './context/AuthContext' // ← NUEVO
+import { AuthProvider, useAuth } from './context/AuthContext' 
 import ThemeToggle from './components/ThemeToggle'
 import HomePage from './pages/HomePage'
 import MyPanelPage from './pages/MyPanelPage'
-import LoginPage from './pages/LoginPage' // ← NUEVO
+import LoginPage from './pages/LoginPage' 
 import { CalendarPage } from './pages/CalendarPage'
 
-// ← NUEVO: Componente para proteger rutas
+// Componente para proteger rutas
 function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth()
   
@@ -20,10 +20,10 @@ function ProtectedRoute({ children }) {
   return isAuthenticated ? children : <Navigate to="/login" />
 }
 
-// Componente para el header con navegación
+// Componente para el header con navegacin
 function AppHeader() {
   const location = useLocation()
-  const { user, logout, isAuthenticated } = useAuth() // ← NUEVO
+  const { user, logout, isAuthenticated } = useAuth() 
   
   const navItems = [
     { path: '/', name: 'Inicio', icon: '🏠' },
@@ -43,7 +43,7 @@ function AppHeader() {
             Finales Ya! 📚
           </Link>
           
-          {/* Navegación (oculta en móvil) */}
+          {/* Navegacion (oculta en movil) */}
           <nav className="hidden md:flex items-center space-x-4">
             {navItems.map((item) => (
               <Link
@@ -61,7 +61,7 @@ function AppHeader() {
             ))}
           </nav>
 
-          {/* ← NUEVO: Botones de login/logout */}
+          {/*  Botones de login/logout */}
           <div className="flex items-center gap-3">
             {isAuthenticated ? (
               <>
@@ -109,7 +109,7 @@ function AppHeader() {
   )
 }
 
-// ← NUEVO: Separar contenido para usar AuthProvider
+//  Separar contenido para usar AuthProvider
 function AppContent() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
@@ -118,9 +118,9 @@ function AppContent() {
       <main className="container mx-auto px-4 py-8">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} /> {/* ← NUEVO */}
+          <Route path="/login" element={<LoginPage />} />
           
-          {/* ← NUEVO: Rutas protegidas */}
+          {/*Rutas protegidas */}
           <Route path="/mipanel" element={
             <ProtectedRoute><MyPanelPage /></ProtectedRoute>
           } />
@@ -154,7 +154,7 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <AuthProvider> {/* ← NUEVO: Wrapper */}
+      <AuthProvider> 
         <AppContent />
       </AuthProvider>
     </Router>
