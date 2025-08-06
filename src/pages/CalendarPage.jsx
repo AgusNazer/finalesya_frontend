@@ -26,6 +26,7 @@ export function CalendarPage() {
     
     if (result.success) {
       console.log('✅ Datos del calendario:', result.data)
+      // console.log('📊 Estadísticas específicas:', result.data.statistics)
       // El backend ya devuelve la estructura correcta, usarla directamente
       setVistaCalendario(result.data)
     } else {

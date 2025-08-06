@@ -4,8 +4,25 @@ import axios from 'axios'
 const AuthContext = createContext()
 
 // Configurar axios con la URL base
-axios.defaults.baseURL = 'http://localhost:10000'
+// axios.defaults.baseURL = 'http://localhost:10000'//devvelopment
+//production
+axios.defaults.baseURL = import.meta.env.VITE_API_URL
 axios.defaults.withCredentials = true // Para enviar cookies
+
+//enviar token en cada request
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
@@ -30,7 +47,9 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post('/api/Auth/login', { email, password })
+      const response = await axios.post('api/Auth/login', { email, password })
+      //guardar jwt
+      localStorage.setItem('token', response.data.token)
       await checkAuth() // Recargar datos del usuario
       return { success: true, data: response.data }
     } catch (error) {
@@ -43,6 +62,7 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
+      localStorage.removeItem('token')
       await axios.post('/api/Auth/logout')
       setUser(null)
       return { success: true }

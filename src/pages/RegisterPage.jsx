@@ -33,7 +33,7 @@ export default function RegisterPage() {
     setIsLoading(true)
 
     try {
-      await axios.post('http://localhost:10000/api/Auth/register', formData)
+      await axios.post('http://localhost:8080/api/Auth/register', formData)
       setSuccess(true)
     } catch (error) {
       setError(error.response?.data?.message || 'Error al registrar usuario')

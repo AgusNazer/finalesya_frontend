@@ -1,7 +1,9 @@
 // src/services/calendarService.js
 import axios from 'axios'
 
-const API_BASE_URL = 'http://localhost:10000/api'
+// const API_BASE_URL = 'http://localhost:10000/api'
+//prod
+const API_BASE_URL = import.meta.env.VITE_API_URL
 
 // Configurar axios para incluir cookies
 axios.defaults.withCredentials = true
@@ -10,7 +12,7 @@ export const calendarService = {
   // Obtener todos los calendarios del usuario
   async getCalendarios(userId) {
     try {
-      const response = await axios.get(`${API_BASE_URL}/calendars/user/${userId}`)
+      const response = await axios.get(`${API_BASE_URL}/api/calendars/user/${userId}`)
       return { success: true, data: response.data }
     } catch (error) {
       return { 
@@ -23,7 +25,7 @@ export const calendarService = {
   // Crear un nuevo calendario
   async crearCalendario(calendarioData) {
     try {
-      const response = await axios.post(`${API_BASE_URL}/calendars`, calendarioData)
+      const response = await axios.post(`${API_BASE_URL}/api/calendars`, calendarioData)
       return { success: true, data: response.data }
     } catch (error) {
       return { 
@@ -83,7 +85,7 @@ export const calendarService = {
   // Obtener vista mensual del calendario
   async getVistaMensual(userId, año, mes) {
     try {
-      const response = await axios.get(`${API_BASE_URL}/calendars/user/${userId}/view/${año}/${mes}`)
+      const response = await axios.get(`${API_BASE_URL}/api/calendars/user/${userId}/view/${año}/${mes}`)
       return { success: true, data: response.data }
     } catch (error) {
       return { 
@@ -96,7 +98,7 @@ export const calendarService = {
   // Obtener exámenes de un usuario en rango de fechas
   async getExamenesUsuario(userId, fechaInicio, fechaFin) {
     try {
-      const response = await axios.get(`${API_BASE_URL}/calendars/user/${userId}/exams`, {
+      const response = await axios.get(`${API_BASE_URL}/api/calendars/user/${userId}/exams`, {
         params: {
           startDate: fechaInicio,
           endDate: fechaFin
@@ -114,7 +116,7 @@ export const calendarService = {
   // Obtener estadísticas del calendario
   async getEstadisticas(userId) {
     try {
-      const response = await axios.get(`${API_BASE_URL}/calendars/user/${userId}/statistics`)
+      const response = await axios.get(`${API_BASE_URL}/api/calendars/user/${userId}/statistics`)
       return { success: true, data: response.data }
     } catch (error) {
       return { 
@@ -127,7 +129,7 @@ export const calendarService = {
   // Obtener calendario específico por ID
   async getCalendario(calendarId) {
     try {
-      const response = await axios.get(`${API_BASE_URL}/calendars/${calendarId}`)
+      const response = await axios.get(`${API_BASE_URL}/api/calendars/${calendarId}`)
       return { success: true, data: response.data }
     } catch (error) {
       return { 
@@ -140,7 +142,7 @@ export const calendarService = {
   // Actualizar calendario
   async actualizarCalendario(calendarId, calendarioData) {
     try {
-      const response = await axios.put(`${API_BASE_URL}/calendars/${calendarId}`, calendarioData)
+      const response = await axios.put(`${API_BASE_URL}/api/calendars/${calendarId}`, calendarioData)
       return { success: true, data: response.data }
     } catch (error) {
       return { 
@@ -153,7 +155,7 @@ export const calendarService = {
   // Eliminar calendario
   async eliminarCalendario(calendarId) {
     try {
-      await axios.delete(`${API_BASE_URL}/calendars/${calendarId}`)
+      await axios.delete(`${API_BASE_URL}/api/calendars/${calendarId}`)
       return { success: true }
     } catch (error) {
       return { 

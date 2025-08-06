@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const API_BASE_URL = 'http://localhost:10000/api';
+const API_BASE_URL = 'http://localhost:8080/api';
 
 function SubjectForm() {
   const [name, setName] = useState('');

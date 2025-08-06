@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-
+import { useAuth } from '../context/AuthContext';
+import { createExam } from '../services/examServices';
 // Configuración de la API
-const API_BASE_URL = 'http://localhost:10000/api';
+const API_BASE_URL = 'http://localhost:8080/api';
 
 function UserPanel() {
   const [type, setType] = useState('');
@@ -12,6 +13,8 @@ function UserPanel() {
   const [exams, setExams] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const { user } = useAuth();
 
   // Cargar materias al montar el componente
   useEffect(() => {
@@ -46,56 +49,47 @@ function UserPanel() {
   };
 
   // Crear examen en la API
-  const handleAddExam = async () => {
-    if (!type || !date || !subjectId) {
-      setError("Completa tipo, fecha y materia");
-      return;
-    }
+// Crear examen en la API
+const handleAddExam = async () => {
+  if (!type || !date || !subjectId) {
+    setError("Completa tipo, fecha y materia");
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
+  setError('');
+
+  try {
+    const examData = {
+      type: type,
+      date: new Date(date).toISOString(),
+      location: location || null,
+      passed: null,
+      subjectId: parseInt(subjectId),
+      userId: user.id // ← AGREGAR ESTA LÍNEA
+    };
+
+    // Usar tu función createExam en lugar de fetch directo
+    const createdExam = await createExam(examData);
+    
+    // Actualizar la lista local
+    setExams([...exams, createdExam]);
+    
+    // Limpiar formulario
+    setType('');
+    setDate('');
+    setLocation('');
+    setSubjectId('');
+    
     setError('');
-
-    try {
-      const examData = {
-        type: type,
-        date: new Date(date).toISOString(),
-        location: location || null,
-        passed: null, // Se puede marcar después
-        subjectId: parseInt(subjectId)
-      };
-
-      const response = await fetch(`${API_BASE_URL}/exams`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(examData)
-      });
-
-      if (response.ok) {
-        const createdExam = await response.json();
-        
-        // Actualizar la lista local
-        setExams([...exams, createdExam]);
-        
-        // Limpiar formulario
-        setType('');
-        setDate('');
-        setLocation('');
-        setSubjectId('');
-        
-        setError('');
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || 'Error al crear el examen');
-      }
-    } catch (error) {
-      setError('Error de conexión con el servidor');
-      console.error('Error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    
+  } catch (error) {
+    setError('Error al crear el examen: ' + error.message);
+    console.error('Error:', error);
+  } finally {
+    setLoading(false);
+  }
+};
   // Eliminar examen
 const handleDeleteExam = async (examId) => {
   if (!window.confirm('¿Estás seguro de que quieres eliminar este examen?')) {
