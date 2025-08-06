@@ -5,6 +5,7 @@ import ThemeToggle from './components/ThemeToggle'
 import HomePage from './pages/HomePage'
 import MyPanelPage from './pages/MyPanelPage'
 import LoginPage from './pages/LoginPage' 
+import RegisterPage from './pages/RegisterPage'
 import { CalendarPage } from './pages/CalendarPage'
 
 // Componente para proteger rutas
@@ -119,6 +120,7 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           
           {/*Rutas protegidas */}
           <Route path="/mipanel" element={

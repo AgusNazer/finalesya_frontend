@@ -19,6 +19,7 @@ export function AuthProvider({ children }) {
   const checkAuth = async () => {
     try {
       const response = await axios.get('/api/Auth/me')
+      console.log('✅ Datos completos del usuario:', response.data)//debug
       setUser(response.data)
     } catch (error) {
       setUser(null)
@@ -55,6 +56,7 @@ export function AuthProvider({ children }) {
     user,
     login,
     logout,
+    register,
     loading,
     isAuthenticated: !!user
   }
@@ -72,4 +74,17 @@ export function useAuth() {
     throw new Error('useAuth debe usarse dentro de AuthProvider')
   }
   return context
+}
+
+// En AuthContext.jsx, agregar este método:
+const register = async (userData) => {
+  try {
+    const response = await axios.post('/api/Auth/register', userData)
+    return { success: true, data: response.data }
+  } catch (error) {
+    return { 
+      success: false, 
+      message: error.response?.data?.message || 'Error al registrar usuario' 
+    }
+  }
 }

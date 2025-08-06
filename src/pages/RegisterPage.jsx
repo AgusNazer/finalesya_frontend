@@ -1,14 +1,21 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { Navigate, Link } from 'react-router-dom'
+import axios from 'axios'
 
-export default function LoginPage() {
-  const [formData, setFormData] = useState({ email: '', password: '' })
+export default function RegisterPage() {
+  const [formData, setFormData] = useState({ 
+    name: '', 
+    email: '', 
+    password: '', 
+    university: '' 
+  })
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const { login, isAuthenticated } = useAuth()
+  const { isAuthenticated } = useAuth()
 
-  // Si ya está logueado, redirigir al panel
+  // Si ya esta logueado, redirigir al panel
   if (isAuthenticated) {
     return <Navigate to="/mipanel" replace />
   }
@@ -25,15 +32,38 @@ export default function LoginPage() {
     setError('')
     setIsLoading(true)
 
-    const result = await login(formData.email, formData.password)
-    
-    if (result.success) {
-      // El AuthContext maneja la redirección
-    } else {
-      setError(result.message)
+    try {
+      await axios.post('http://localhost:10000/api/Auth/register', formData)
+      setSuccess(true)
+    } catch (error) {
+      setError(error.response?.data?.message || 'Error al registrar usuario')
     }
     
     setIsLoading(false)
+  }
+
+  if (success) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 px-4">
+        <div className="max-w-md w-full text-center">
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+            <div className="text-6xl mb-4">✅</div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+              ¡Registro exitoso!
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              Tu cuenta ha sido creada correctamente. Ahora puedes iniciar sesión.
+            </p>
+            <Link 
+              to="/login"
+              className="inline-block w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200"
+            >
+              Ir a iniciar sesión
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -47,16 +77,33 @@ export default function LoginPage() {
             </h1>
           </Link>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            Iniciar Sesión
+            Crear cuenta
           </h2>
           <p className="mt-2 text-gray-600 dark:text-gray-400">
-            Accede a tu panel de exámenes
+            Únete y organiza tus exámenes
           </p>
         </div>
 
         {/* Formulario */}
         <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Nombre */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Nombre completo
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                placeholder="Juan Pérez"
+              />
+            </div>
+
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -74,6 +121,22 @@ export default function LoginPage() {
               />
             </div>
 
+            {/* Universidad */}
+            <div>
+              <label htmlFor="university" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Universidad (opcional)
+              </label>
+              <input
+                id="university"
+                name="university"
+                type="text"
+                value={formData.university}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                placeholder="UTN, UBA, UADE, etc."
+              />
+            </div>
+
             {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -88,7 +151,11 @@ export default function LoginPage() {
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 placeholder="••••••••"
+                minLength="6"
               />
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Mínimo 6 caracteres
+              </p>
             </div>
 
             {/* Error */}
@@ -110,46 +177,30 @@ export default function LoginPage() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Iniciando sesión...
+                  Creando cuenta...
                 </span>
               ) : (
-                'Iniciar Sesión'
+                'Crear cuenta'
               )}
             </button>
           </form>
-
-          {/* Credenciales de prueba */}
-          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-              <strong>Credenciales de prueba:</strong>
-            </p>
-            <div className="text-sm space-y-1">
-              <div className="font-mono bg-white dark:bg-gray-800 p-2 rounded border">
-                <strong>Admin:</strong> admin@finalesya.com / Admin123!
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Links */}
-        <div className="text-center">
+        <div className="text-center space-y-2">
+          <p className="text-gray-600 dark:text-gray-400">
+            ¿Ya tienes cuenta?{' '}
+            <Link 
+              to="/login" 
+              className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+            >
+              Inicia sesión
+            </Link>
+          </p>
           <Link 
             to="/" 
-            className="text-blue-600 dark:text-blue-400 hover:underline"
+            className="block text-blue-600 dark:text-blue-400 hover:underline"
           >
-            <p className="text-gray-600 dark:text-gray-400 mb-2">
-    ¿No tienes cuenta?{' '}
-    <Link 
-      to="/register" 
-      className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
-    >
-      Regístrate aquí
-    </Link>
-  </p>
-  <Link 
-    to="/" 
-    className="text-blue-600 dark:text-blue-400 hover:underline"
-  ></Link>
             ← Volver al inicio
           </Link>
         </div>
