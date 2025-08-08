@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 const API_BASE_URL = 'https://finalesyabackend-production.up.railway.app/api';
 
@@ -13,7 +13,7 @@ function SubjectForm() {
   
   const { user } = useAuth(); // ✅ Obtener usuario logueado
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const currentYear = new Date().getFullYear();
   const minYear = currentYear - 5;
@@ -58,6 +58,8 @@ function SubjectForm() {
         setName('');
         setMajor('');
         setYearTaken('');
+        //Redirect directo a la URL completa
+        window.location.href = 'https://finalesyafrontend.netlify.app/mipanel';
       } else {
         const data = await response.json();
         setError(data.message || 'Error al crear la materia');
@@ -74,12 +76,12 @@ function SubjectForm() {
       {success && (
         <div className="mt-4 p-4 bg-green-100 border border-green-400 text-green-800 rounded-lg">
           <p>{success}</p>
-          <button
+          {/* <button
             onClick={() => navigate(0)} //para refrescar l; pagina
             className="mt-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition"
           >
             🔄 Refrescar página
-          </button>
+          </button> */}
         </div>
       )}
 
