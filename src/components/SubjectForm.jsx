@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useAuth } from '../context/AuthContext'; // ✅ Importar AuthContext
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const API_BASE_URL = 'https://finalesyabackend-production.up.railway.app/api';
 
@@ -11,6 +12,8 @@ function SubjectForm() {
   const [success, setSuccess] = useState('');
   
   const { user } = useAuth(); // ✅ Obtener usuario logueado
+
+  const navigate = useNavigate();
 
   const currentYear = new Date().getFullYear();
   const minYear = currentYear - 5;
@@ -66,13 +69,13 @@ function SubjectForm() {
   };
 
   return (
-    <div className="p-6 mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 space-y-4">
+<div className="p-6 mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 space-y-4">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">➕ Agregar Materia</h3>
       {success && (
         <div className="mt-4 p-4 bg-green-100 border border-green-400 text-green-800 rounded-lg">
           <p>{success}</p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => navigate(0)} //para refrescar l; pagina
             className="mt-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition"
           >
             🔄 Refrescar página
