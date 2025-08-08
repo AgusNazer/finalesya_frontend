@@ -54,7 +54,7 @@ function SubjectForm() {
       });
 
       if (response.ok) {
-        setSuccess('Materia agregada correctamente(refrescar pagina para verla)');
+        setSuccess('Materia agregada correctamente(actualizando la lista)');
         setName('');
         setMajor('');
         setYearTaken('');
