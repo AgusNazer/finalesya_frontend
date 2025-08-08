@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { createExam } from '../services/examServices';
 // Configuración de la API
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL
 
 function UserPanel() {
   const [type, setType] = useState('');
@@ -25,7 +25,7 @@ function UserPanel() {
   // Obtener materias desde la API
   const fetchSubjects = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/subject`);
+      const response = await fetch(`${API_BASE_URL}/api/subject`);
       if (response.ok) {
         const data = await response.json();
         setSubjects(data);
@@ -38,7 +38,7 @@ function UserPanel() {
   // Obtener exámenes desde la API
   const fetchExams = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/exams`);
+      const response = await fetch(`${API_BASE_URL}/api/exams`);
       if (response.ok) {
         const data = await response.json();
         setExams(data);
@@ -97,7 +97,7 @@ const handleDeleteExam = async (examId) => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/exams/${examId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/exams/${examId}`, {
       method: 'DELETE',
     });
 
@@ -118,7 +118,7 @@ const handleDeleteSubject = async (subjectId) => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/subject/${subjectId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/subject/${subjectId}`, {
       method: 'DELETE',
     });
 

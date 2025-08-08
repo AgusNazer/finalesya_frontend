@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const API_BASE_URL = 'http://localhost:10000/api';
+const API_BASE_URL = 'https://finalesyabackend-production.up.railway.app/api';
 
 function ExamList() {
   const [exams, setExams] = useState([]);
