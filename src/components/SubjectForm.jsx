@@ -49,7 +49,7 @@ function SubjectForm() {
           name, 
           major, 
           yearTaken: year,
-          usuarioId: user.id // ✅ AGREGAR USUARIO ID
+          usuarioId: user.id 
         }),
       });
 
