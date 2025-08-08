@@ -239,7 +239,7 @@ const handleDeleteSubject = async (subjectId) => {
           <div>
             <span className="font-medium text-gray-900 dark:text-gray-100">{subject.name}</span>
             <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">({subject.major})</span>
-            <span className="ml-2 text-sm text-gray-400">📅 {subject.yearTaken}</span>
+            <span className="ml-2 text-sm text-gray-400">{subject.yearTaken}</span>
           </div>
           <button
             onClick={() => handleDeleteSubject(subject.id)}
@@ -259,7 +259,7 @@ const handleDeleteSubject = async (subjectId) => {
       {/* Lista de exámenes */}
       <div>
         <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200 flex items-center gap-2">
-          📝 Exámenes Programados
+          Exámenes Programados
           <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm font-medium px-2 py-1 rounded-full">
             {exams.length}
           </span>
@@ -294,7 +294,7 @@ const handleDeleteSubject = async (subjectId) => {
                   
                   <div className="text-right">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-500 dark:text-gray-400">📅</span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400"></span>
                       <span className="text-gray-700 dark:text-gray-300 font-medium">
                         {new Date(exam.date).toLocaleDateString('es-ES', {
                           weekday: 'short',

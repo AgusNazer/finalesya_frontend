@@ -67,10 +67,10 @@ export function CalendarPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-            📅 Calendario de Exámenes
+            📅 Calendario de Examenes
           </h1>
           <p className="text-gray-600 dark:text-gray-300">
-            Organiza y visualiza todos tus exámenes
+            Organiza y visualiza todos tus examenes
           </p>
         </div>
       </div>
@@ -194,7 +194,7 @@ export function CalendarPage() {
       {calendarios.length > 0 && (
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-            📚 Tus Cuatrimestres
+            Tus Cuatrimestres
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {calendarios.map((calendario) => (
