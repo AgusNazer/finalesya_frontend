@@ -1,25 +1,36 @@
 import { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 const API_BASE_URL = 'https://finalesyabackend-production.up.railway.app/api';
 
 function ExamList() {
   const [exams, setExams] = useState([]);
+  const { user } = useAuth();
 
   useEffect(() => {
+    if(user?.id)
     fetchExams();
-  }, []);
+  }, [user?.id]);
 
   const fetchExams = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/exams`);
+      const res = await fetch(`${API_BASE_URL}/exams/user/${user.id}`);
       if (res.ok) {
         const data = await res.json();
         setExams(data);
       }
     } catch (err) {
-      console.error("Error cargando exámenes:", err);
+      console.error("Error cargando examenes:", err);
     }
   };
+   // Mostrar loading si no hay usuario
+  if (!user) {
+    return (
+      <div className="p-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+        <p className="text-gray-500 dark:text-gray-400">Cargando...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-300">
