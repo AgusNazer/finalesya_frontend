@@ -22,10 +22,10 @@ function UserPanel() {
     fetchExams();
   }, []);
 
-  // Obtener materias desde la API
+  // Obtener materias desde la API filtradas por usuarios
   const fetchSubjects = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/subject`);
+      const response = await fetch(`${API_BASE_URL}/api/subject/user/${user.id}`);
       if (response.ok) {
         const data = await response.json();
         setSubjects(data);
@@ -38,7 +38,7 @@ function UserPanel() {
   // Obtener exámenes desde la API
   const fetchExams = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/exams`);
+      const response = await fetch(`${API_BASE_URL}/api/exams/user/${user.id}`);
       if (response.ok) {
         const data = await response.json();
         setExams(data);
