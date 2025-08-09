@@ -40,6 +40,9 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 px-4">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
+        <span className="text-xs text-gray-500 dark:text-gray-400 -mt-1">
+      Version Beta v0.1
+    </span>
         <div className="text-center">
           <Link to="/" className="inline-block">
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
@@ -118,17 +121,8 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Credenciales de prueba */}
-          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-              <strong>Credenciales de prueba:</strong>
-            </p>
-            <div className="text-sm space-y-1">
-              <div className="font-mono bg-white dark:bg-gray-800 p-2 rounded border">
-                <strong>Admin:</strong> admin@finalesya.com / Admin123!
-              </div>
-            </div>
-          </div>
+          {/* Credenciales de prueba, el codigo esta en notion es un div nuevo*/}
+
         </div>
 
         {/* Links */}

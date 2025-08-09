@@ -24,6 +24,7 @@ function Layout() {
             >
               Finales Ya! 📚
             </Link>
+            <span className="text-xs text-red-500 dark:text-gray-400 -mt-1">Versión beta v0.1</span>
 
             {/* Navegación Desktop */}
             <nav className="hidden md:flex items-center space-x-6">
